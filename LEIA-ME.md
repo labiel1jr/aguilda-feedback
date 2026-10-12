@@ -9,19 +9,26 @@ As respostas vão para uma **planilha Google** (uma linha por pessoa). O WhatsAp
 
 ## 1. A planilha (uma vez)
 
-1. Crie uma planilha nova no Google Planilhas, por exemplo **"A Guilda — feedback"**.
-2. Menu **Extensões → Apps Script**. Apague o que estiver lá e cole o conteúdo de `apps-script/Codigo.gs`. Salve.
-3. **Implantar → Nova implantação** → engrenagem → **App da Web**.
+O `apps-script/Codigo.gs` cria a planilha sozinho e depois recebe as respostas.
+
+1. Abra **script.google.com → Novo projeto**. Dê o nome **A Guilda — feedback**.
+2. Apague o que estiver lá e cole o conteúdo de `apps-script/Codigo.gs`.
+3. Em `const PASTA_ID = "";`, cole o ID da pasta do Drive onde a planilha deve ficar (o trecho depois de `/folders/` no link da pasta). Vazio: fica na raiz do seu Drive. **Cuidado:** numa pasta compartilhada por link, a planilha herda o compartilhamento e quem tem o link da pasta vê as respostas (o script avisa no registro). Salve (ícone de disquete).
+4. No alto, escolha a função **criarPlanilha** e clique em **Executar**. Autorize com sua conta (o Google avisa que o app não é verificado: **Avançado → Acessar**). O registro mostra o link da planilha criada, com as abas **Resumo** e **Respostas**.
+5. **Implantar → Nova implantação** → engrenagem → **App da Web**.
    - Executar como: **Eu**
    - Quem pode acessar: **Qualquer pessoa**
-4. Autorize com sua conta (o Google avisa que o app não é verificado: **Avançado → Acessar**). O script só mexe nesta planilha.
-5. Copie a **URL do app da Web** (termina em `/exec`). Abrir essa URL no navegador mostra "A Guilda — feedback: no ar."
-6. No `index.html`, cole a URL em `const ENDPOINT = "";`.
-7. O botão do WhatsApp vai para o número em `const WHATSAPP` (só dígitos, com 55 e DDD).
-8. **E-mail automático:** cada resposta enviada pela planilha também chega por e-mail na conta Google dona da planilha (o Google pede a permissão "enviar e-mail como você" ao autorizar). Para outro endereço, preencha `EMAIL_AVISO` no `Codigo.gs`; `false` desliga. Cota do Google: 100 e-mails por dia numa conta comum.
-9. **Botão "Mandar por e-mail"** (opcional, para quem prefere o próprio e-mail): preencha `const EMAIL = "";` no `index.html`. Fica visível na página pública.
+6. Copie a **URL do app da Web** (termina em `/exec`). Abrir essa URL no navegador mostra "A Guilda — feedback: no ar."
+7. No `index.html`, cole a URL em `const ENDPOINT = "";`.
+8. Opcional: escolha a função **testarResposta** e execute; aparece uma linha de teste na planilha e chega um e-mail. Apague a linha depois.
 
-Se mudar o `Codigo.gs` depois: **Implantar → Gerenciar implantações → editar → Nova versão** (a URL continua a mesma).
+- **Resumo:** número de respostas, nota média, NPS (promotores − detratores), quantos acharam erro e jogariam a próxima, médias das escalas 1–5 com estrelas e as contagens de capítulo, plataforma, dificuldade, Ninho, herói favorito e esquecido, relações, tempo jogado e próxima versão. Atualiza sozinho.
+- **Respostas:** uma linha por pessoa; a linha 1 tem os `id`s das perguntas (o título legível está na nota de cada célula). Nota 0–10 colorida.
+- **E-mail automático:** cada resposta chega por e-mail na sua conta. Outro endereço: `EMAIL_AVISO`; `false` desliga. Cota do Google: 100 e-mails por dia numa conta comum.
+- **WhatsApp:** o botão vai para o número em `const WHATSAPP` no `index.html`.
+- **Botão "Mandar por e-mail"** (opcional): preencha `const EMAIL = "";` no `index.html`. Fica visível na página pública.
+
+Se mudar o `Codigo.gs` depois: **Implantar → Gerenciar implantações → editar → Nova versão** (a URL continua a mesma). Não rode `criarPlanilha` de novo: ele só mostra a planilha que já existe.
 
 ## 2. Publicar (GitHub Pages)
 
