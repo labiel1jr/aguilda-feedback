@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Guilda — Feedback</title>
+<meta name="description" content="Conte à guilda o que você achou do jogo: cinco minutos, poucas perguntas.">
+<meta property="og:title" content="A Guilda — conte o que achou">
+<meta property="og:description" content="Cinco minutos para ajudar a guilda a melhorar.">
+<meta property="og:image" content="assets/titulo.webp">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icone_192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #2b2118; --panel: #3d2f22; --parch: #e8d9b5; --parch-2: #dcc89c; --ink: #2a1f14;
+  --gold: #d4a94a; --text: #f1e6cc; --muted: #b5a283; --good: #7fb069; --bad: #d1603d;
+  --ink-soft: #5a4630;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; color: var(--text); font: 19px/1.45 "EB Garamond", Georgia, serif;
+  background: var(--bg) url("assets/salao.webp") center top / cover fixed;
+  min-height: 100vh;
+}
+body::before { content: ""; position: fixed; inset: 0; background: rgba(28, 20, 13, .82); z-index: -1; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+
+/* Cabeçalho com a arte do título */
+.hero {
+  position: relative; margin: 0 -16px; height: min(52vw, 360px); min-height: 200px;
+  background: url("assets/titulo.webp") center 30% / cover; border-bottom: 3px solid #1a120c;
+}
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 45%, rgba(28,20,13,.95)); }
+.hero h1, .hero p { position: absolute; left: 0; right: 0; text-align: center; z-index: 1; margin: 0; padding: 0 16px; }
+.hero h1 {
+  bottom: 52px; font: 800 clamp(40px, 9vw, 68px)/1 Cinzel, serif; color: var(--gold);
+  text-shadow: 0 3px 0 #1a120c, 0 0 18px rgba(0,0,0,.8);
+}
+.hero p { bottom: 18px; font-style: italic; color: var(--text); text-shadow: 0 2px 4px #000; }
+
+/* Cartazes (seções) pregados */
+.cartaz {
+  position: relative; margin: 34px 0 0; padding: 30px 22px 22px; color: var(--ink);
+  background: linear-gradient(175deg, var(--parch), var(--parch-2));
+  border-radius: 3px; box-shadow: 0 8px 22px rgba(0,0,0,.55), inset 0 0 40px rgba(120, 85, 40, .25);
+}
+.cartaz:nth-of-type(odd) { transform: rotate(-.35deg); }
+.cartaz:nth-of-type(even) { transform: rotate(.3deg); }
+.cartaz::before {
+  content: ""; position: absolute; top: -14px; left: 50%; width: 34px; height: 34px; margin-left: -17px;
+  background: url("assets/prego_ferro.png") center / contain no-repeat; filter: drop-shadow(0 3px 2px rgba(0,0,0,.5));
+}
+.cartaz h2 { margin: 0 0 4px; font: 800 24px/1.2 Cinzel, serif; color: #5b3a17; }
+.cartaz .sub { margin: 0 0 14px; color: var(--ink-soft); font-style: italic; }
+.selo-sec { float: right; width: 44px; height: 44px; margin: -12px -6px 0 8px; opacity: .9; }
+
+.q { margin: 20px 0 0; border: 0; padding: 0; min-width: 0; }
+.q > legend, .q > label.lbl { display: block; font-weight: 600; margin-bottom: 8px; padding: 0; }
+.q .help { display: block; font-weight: 400; font-style: italic; color: var(--ink-soft); font-size: 16px; }
+.req { color: var(--bad); }
+
+/* Botões de escolha: a peça de pergaminho do jogo */
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt {
+  font: 600 17px/1.2 "EB Garamond", serif; color: var(--ink); cursor: pointer; min-height: 44px;
+  padding: 9px 16px; background: none; border: 14px solid transparent; border-width: 14px;
+  border-image: url("assets/btn_pergaminho_normal.png") 14 fill / 14px stretch;
+  transition: transform .08s, filter .12s;
+}
+.opt:hover { filter: brightness(1.08); }
+.opt:active { transform: translateY(1px); }
+.opt[aria-pressed="true"], .opt[aria-checked="true"] {
+  border-image-source: url("assets/btn_madeira_normal.png"); border-image-slice: 16 fill; color: #f3e6c8;
+}
+.opt:focus-visible, .hero-pick:focus-visible, .btn:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--gold); outline-offset: 2px;
+}
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.scale.nps { grid-template-columns: repeat(11, 1fr); gap: 4px; }
+.scale .opt { padding: 8px 0; text-align: center; border-width: 10px; border-image-width: 10px; }
+.scale-ends { display: flex; justify-content: space-between; font-size: 15px; color: var(--ink-soft); font-style: italic; margin-top: 4px; }
+
+/* Retratos dos heróis */
+.heroes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.hero-pick {
+  background: none; border: 0; padding: 0; cursor: pointer; font: inherit; color: var(--ink); text-align: center;
+}
+.hero-pick img {
+  display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 6px;
+  border: 3px solid #6b5132; box-shadow: 0 3px 6px rgba(0,0,0,.35); background: #3d2f22;
+  filter: saturate(.85); transition: transform .1s, filter .1s;
+}
+.hero-pick span { display: block; font-weight: 600; font-size: 16px; margin-top: 3px; }
+.hero-pick small { display: block; font-size: 13px; color: var(--ink-soft); margin-top: -3px; }
+.hero-pick[aria-checked="true"] img { border-color: var(--gold); filter: none; transform: scale(1.04); box-shadow: 0 0 0 3px #5b3a17, 0 6px 12px rgba(0,0,0,.4); }
+.hero-pick[aria-checked="true"] span { color: #7a4d12; }
+.none-pick { margin-top: 8px; }
+
+input[type=text], textarea {
+  width: 100%; font: 18px/1.4 "EB Garamond", serif; color: var(--ink); background: rgba(255, 250, 235, .7);
+  border: 2px solid #9c8058; border-radius: 4px; padding: 10px 12px;
+}
+textarea { min-height: 96px; resize: vertical; }
+.hidden { display: none !important; }
+.honey { position: absolute; left: -9999px; }
+
+/* Rodapé de envio */
+.selar { text-align: center; }
+.btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 14px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none;
+  font: 700 19px/1 Cinzel, serif; color: #f3e6c8; min-height: 54px; padding: 8px 20px; background: none;
+  border: 16px solid transparent; border-image: url("assets/btn_madeira_normal.png") 16 fill / 16px stretch;
+  text-shadow: 0 1px 2px #000;
+}
+.btn img { width: 28px; height: 28px; }
+.btn.alt { border-image-source: url("assets/btn_pergaminho_normal.png"); border-image-slice: 14 fill; color: var(--ink); text-shadow: none; font-size: 17px; }
+.btn:hover { filter: brightness(1.1); }
+.btn[disabled] { filter: grayscale(.8) brightness(.8); cursor: wait; }
+.msg { margin: 12px 0 0; min-height: 1.4em; font-style: italic; }
+.msg.err { color: #9b2f14; }
+.progress { position: sticky; top: 0; z-index: 5; margin: 0 -16px; padding: 8px 16px; background: rgba(28,20,13,.92); border-bottom: 1px solid #5a4630; font-size: 15px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+.progress .bar { flex: 1; height: 8px; background: #3d2f22; border-radius: 4px; overflow: hidden; }
+.progress .fill { height: 100%; width: 0; background: linear-gradient(90deg, #a87a2a, var(--gold)); transition: width .25s; }
+
+/* Agradecimento */
+.obrigado { text-align: center; padding-top: 40px; }
+.obrigado img.selo { width: 120px; height: 120px; animation: carimbo .45s cubic-bezier(.2, 1.6, .4, 1) both; }
+@keyframes carimbo { from { transform: scale(2.4) rotate(-18deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.obrigado h2 { font: 800 30px Cinzel, serif; color: var(--gold); margin: 14px 0 6px; }
+footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--muted); }
+
+@media (max-width: 560px) {
+  body { font-size: 18px; }
+  .cartaz { padding: 28px 14px 18px; transform: none !important; }
+  .heroes { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .hero-pick span { font-size: 14px; } .hero-pick small { display: none; }
+  .scale.nps { grid-template-columns: repeat(6, 1fr); }
+  .scale .opt { font-size: 16px; }
+  .scale-ends.nps-ends { display: none; }
+  .btn { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>A Guilda</h1>
+    <p>Conte à guilda o que você achou</p>
+  </header>
+
+  <div class="progress" aria-hidden="true"><span id="prog-txt">0 de 0</span><div class="bar"><div class="fill" id="prog-fill"></div></div></div>
+
+  <main id="form-area">
+    <section class="cartaz" style="margin-top:24px">
+      <p style="margin:0">Obrigado por jogar! Estas perguntas ajudam a decidir o que melhorar primeiro. Leva uns <b>5 minutos</b>.
+      Só as marcadas com <span class="req">✦</span> são obrigatórias; pule o que quiser.</p>
+    </section>
+    <form id="f" novalidate></form>
+  </main>
+
+  <main id="thanks" class="obrigado hidden" aria-live="polite">
+    <img class="selo" src="assets/selo_lendario.png" alt="">
+    <h2>A guilda agradece!</h2>
+    <p id="thanks-txt">Sua resposta foi selada e enviada.</p>
+    <div class="btns"><button class="btn alt" type="button" id="again"><img src="assets/voltar.png" alt="">Responder de novo</button></div>
+  </main>
+
+  <footer>A Guilda — jogo em desenvolvimento · as respostas são usadas só para melhorar o jogo</footer>
+</div>
+
+<script>
+// ===== Configuração =====
+// URL do App Script publicado como app da Web (ver LEIA-ME.md). Vazio: só WhatsApp e copiar.
+const ENDPOINT = "";
+// Número do WhatsApp que recebe as respostas, só dígitos com DDI e DDD (ex.: 5511999998888). Vazio: a pessoa escolhe o contato.
+const WHATSAPP = "";
+
+const HEROIS = [
+  ["theo", "Theo", "Paladino"], ["lyssa", "Lyssa", "Ladina"], ["mira", "Mira", "Maga"], ["senna", "Senna", "Guerreira"],
+  ["bram", "Bram", "Bardo"], ["vera", "Vera", "Guerreira"], ["corin", "Corin", "Clérigo"], ["halvard", "Halvard", "Guerreiro"],
+];
+
+// Seções e perguntas. tipo: escolha | escala | nps | heroi | texto | longo
+const SECOES = [
+  { titulo: "Quem é você na guilda", sub: "Para entender de onde vem cada resposta.", selo: "selo_comum", perguntas: [
+    { id: "nome", tipo: "texto", texto: "Seu nome ou apelido", ajuda: "Opcional. Só para eu saber a quem agradecer." },
+    { id: "plataforma", tipo: "escolha", texto: "Onde você jogou?", obrig: true, opcoes: ["Celular (Android)", "PC (Windows)", "Os dois"] },
+    { id: "tempo", tipo: "escolha", texto: "Quanto tempo jogou, somando tudo?", opcoes: ["Menos de 30 min", "30 min a 1 h", "1 a 3 h", "Mais de 3 h"] },
+    { id: "capitulo", tipo: "escolha", texto: "Até onde você chegou?", obrig: true, opcoes: ["Capítulo 1", "Capítulo 2", "Capítulo 3", "Capítulo 4", "Terminei o jogo"] },
+    { id: "perfil", tipo: "escolha", texto: "Você costuma jogar jogos de estratégia ou RPG?", opcoes: ["Quase nunca", "Às vezes", "Sempre"] },
+  ]},
+  { titulo: "Entendendo o jogo", sub: "1 = não entendi nada · 5 = ficou muito claro", selo: "selo_pessoal", perguntas: [
+    { id: "clareza_chance", tipo: "escala", texto: "O que aumenta a chance de sucesso de uma missão (quem mandar, vínculos, itens, magias)" },
+    { id: "clareza_mapa", tipo: "escala", texto: "O Mapa Mágico e as escolhas de rota" },
+    { id: "clareza_relacoes", tipo: "escala", texto: "As relações entre os heróis (afinidade, vínculos, bastidores)" },
+    { id: "clareza_extras", tipo: "escala", texto: "Os contratos e o Grimório", ajuda: "Se não chegou a ver, pode pular." },
+    { id: "confuso", tipo: "longo", texto: "O que ficou confuso ou você só descobriu tarde demais?" },
+  ]},
+  { titulo: "Dificuldade", sub: "Se o jogo foi justo com você.", selo: "selo_urgente", perguntas: [
+    { id: "dificuldade", tipo: "escolha", texto: "No geral, o jogo foi…", opcoes: ["Fácil demais", "Na medida", "Difícil demais", "Injusto (perdi sem entender por quê)"] },
+    { id: "travou_onde", tipo: "texto", texto: "Teve um momento em que você empacou? Onde?", ajuda: "Uma missão, um capítulo, uma tela…" },
+    { id: "ninho", tipo: "escolha", texto: "O ataque ao Ninho do Corvo (final do Capítulo 4)", opcoes: ["Não cheguei", "Justo", "Difícil demais", "Fácil demais"] },
+  ]},
+  { titulo: "Heróis e história", sub: "Toque no retrato.", selo: "selo_pessoal", perguntas: [
+    { id: "favorito", tipo: "heroi", texto: "Seu herói favorito" },
+    { id: "esquecido", tipo: "heroi", texto: "Quem você quase nunca mandava em missão?", nenhum: "Usei todo mundo" },
+    { id: "por_que_esquecido", tipo: "texto", texto: "Por quê?", ajuda: "Fraco, sem graça, não combinava com os outros…" },
+    { id: "relacoes_mudaram", tipo: "escolha", texto: "As relações e os bastidores mudaram suas escolhas de quem mandar?", opcoes: ["Não", "Um pouco", "Muito"] },
+    { id: "historia", tipo: "escala", texto: "A história te prendeu?", ends: ["Nem um pouco", "Muito"] },
+  ]},
+  { titulo: "Arte e som", sub: "1 = não gostei · 5 = gostei muito", selo: "selo_comum", perguntas: [
+    { id: "arte", tipo: "escala", texto: "A arte (retratos, cenas, quadro de avisos, mapa)" },
+    { id: "musica", tipo: "escala", texto: "A música", extra: "Joguei sem som" },
+    { id: "arte_comentario", tipo: "texto", texto: "Alguma arte ou tela que ficou estranha?" },
+  ]},
+  { titulo: "Problemas", sub: "Bugs, travamentos, coisas fora do lugar.", selo: "selo_urgente", perguntas: [
+    { id: "bug", tipo: "escolha", texto: "Encontrou algum erro?", opcoes: ["Não", "Sim"] },
+    { id: "bug_desc", tipo: "longo", texto: "O que aconteceu, em qual tela e o que você tinha feito antes?", se: ["bug", "Sim"] },
+  ]},
+  { titulo: "O selo final", sub: "As duas perguntas que mais importam.", selo: "selo_lendario", perguntas: [
+    { id: "nps", tipo: "nps", texto: "De 0 a 10, quanto você recomendaria A Guilda a um amigo?", obrig: true },
+    { id: "mudaria", tipo: "longo", texto: "Se você pudesse mudar uma coisa no jogo, o que seria?" },
+    { id: "gostou", tipo: "longo", texto: "E o que você mais gostou?" },
+    { id: "proxima", tipo: "escolha", texto: "Jogaria a próxima versão?", opcoes: ["Sim", "Talvez", "Não"] },
+  ]},
+];
+
+// ===== Estado =====
+const params = new URLSearchParams(location.search);
+const META = { versao: params.get("v") || "", plataforma_jogo: params.get("p") || "" };
+const DRAFT_KEY = "aguilda-feedback-rascunho";
+let resp = {};
+try { resp = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}") || {}; } catch (e) { resp = {}; }
+if (!resp.plataforma && META.plataforma_jogo) {
+  resp.plataforma = /android/i.test(META.plataforma_jogo) ? "Celular (Android)" : /windows/i.test(META.plataforma_jogo) ? "PC (Windows)" : undefined;
+}
+const todas = SECOES.flatMap(s => s.perguntas);
+
+function salvarRascunho() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(resp)); } catch (e) {} }
+function el(tag, attrs = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v);
+  }
+  for (const c of kids) n.append(c);
+  return n;
+}
+
+function cabecalho(p, asLegend) {
+  const t = el(asLegend ? "legend" : "label", asLegend ? {} : { class: "lbl", for: "q_" + p.id }, p.texto);
+  if (p.obrig) t.append(" ", el("span", { class: "req", title: "obrigatória" }, "✦"));
+  if (p.ajuda) t.append(el("span", { class: "help" }, p.ajuda));
+  return t;
+}
+
+// Grupo de botões que funciona como rádio (um selecionado; tocar de novo desmarca).
+function grupo(p, valores, rotulos, classe) {
+  const box = el("div", { class: classe, role: "radiogroup" });
+  valores.forEach((v, i) => {
+    const b = el("button", { type: "button", class: "opt", role: "radio", "aria-checked": String(resp[p.id] === v) }, rotulos[i]);
+    b.addEventListener("click", () => { resp[p.id] = resp[p.id] === v ? undefined : v; atualizar(); });
+    box.append(b);
+  });
+  return box;
+}
+
+function campo(p) {
+  if (p.tipo === "texto" || p.tipo === "longo") {
+    const w = el("div", { class: "q", "data-q": p.id });
+    w.append(cabecalho(p, false));
+    const inp = p.tipo === "texto"
+      ? el("input", { type: "text", id: "q_" + p.id, maxlength: "300", autocomplete: p.id === "nome" ? "nickname" : "off" })
+      : el("textarea", { id: "q_" + p.id, maxlength: "2000" });
+    inp.value = resp[p.id] || "";
+    inp.addEventListener("input", () => { resp[p.id] = inp.value.trim() || undefined; salvarRascunho(); progresso(); });
+    w.append(inp);
+    return w;
+  }
+  const w = el("fieldset", { class: "q", "data-q": p.id });
+  w.append(cabecalho(p, true));
+  if (p.tipo === "escolha") w.append(grupo(p, p.opcoes, p.opcoes, "opts"));
+  if (p.tipo === "escala") {
+    w.append(grupo(p, ["1", "2", "3", "4", "5"], ["1", "2", "3", "4", "5"], "scale"));
+    const ends = p.ends || ["Pouco", "Muito"];
+    w.append(el("div", { class: "scale-ends" }, el("span", {}, ends[0]), el("span", {}, ends[1])));
+    if (p.extra) w.append(el("div", { class: "opts", style: "margin-top:8px" }, ...grupo(p, [p.extra], [p.extra], "opts").childNodes));
+  }
+  if (p.tipo === "nps") {
+    const vs = Array.from({ length: 11 }, (_, i) => String(i));
+    w.append(grupo(p, vs, vs, "scale nps"));
+    w.append(el("div", { class: "scale-ends nps-ends" }, el("span", {}, "De jeito nenhum"), el("span", {}, "Com certeza")));
+  }
+  if (p.tipo === "heroi") {
+    const box = el("div", { class: "heroes", role: "radiogroup" });
+    for (const [id, nome, classe] of HEROIS) {
+      const b = el("button", { type: "button", class: "hero-pick", role: "radio", "aria-checked": String(resp[p.id] === nome), "aria-label": nome },
+        el("img", { src: `assets/herois/${id}.webp`, alt: "", loading: "lazy", width: "192", height: "192" }), el("span", {}, nome), el("small", {}, classe));
+      b.addEventListener("click", () => { resp[p.id] = resp[p.id] === nome ? undefined : nome; atualizar(); });
+      box.append(b);
+    }
+    w.append(box);
+    if (p.nenhum) w.append(el("div", { class: "opts none-pick" }, ...grupo(p, [p.nenhum], [p.nenhum], "opts").childNodes));
+  }
+  return w;
+}
+
+function montar() {
+  const f = document.getElementById("f");
+  f.replaceChildren();
+  for (const s of SECOES) {
+    const sec = el("section", { class: "cartaz" });
+    sec.append(el("img", { class: "selo-sec", src: `assets/${s.selo}.png`, alt: "" }), el("h2", {}, s.titulo), el("p", { class: "sub" }, s.sub));
+    s.perguntas.forEach(p => sec.append(campo(p)));
+    f.append(sec);
+  }
+  const fim = el("section", { class: "cartaz selar" });
+  fim.append(el("h2", {}, "Selar e enviar"));
+  fim.append(el("input", { class: "honey", type: "text", id: "site", tabindex: "-1", autocomplete: "off", "aria-hidden": "true" }));
+  const btns = el("div", { class: "btns" });
+  if (ENDPOINT) btns.append(el("button", { type: "submit", class: "btn", id: "enviar" }, el("img", { src: "assets/confirmar.png", alt: "" }), "Enviar respostas"));
+  btns.append(el("button", { type: "button", class: ENDPOINT ? "btn alt" : "btn", id: "whats" }, el("img", { src: "assets/conversar.png", alt: "" }), "Mandar pelo WhatsApp"));
+  btns.append(el("button", { type: "button", class: "btn alt", id: "copiar" }, el("img", { src: "assets/ver_detalhes.png", alt: "" }), "Copiar respostas"));
+  fim.append(btns, el("p", { class: "msg", id: "msg", role: "status" }));
+  f.append(fim);
+  f.addEventListener("submit", e => { e.preventDefault(); enviar(); });
+  document.getElementById("whats").addEventListener("click", whatsapp);
+  document.getElementById("copiar").addEventListener("click", copiar);
+  atualizar();
+}
+
+// Reflete as escolhas nos botões, mostra perguntas condicionais e salva o rascunho.
+function atualizar() {
+  for (const p of todas) {
+    const box = document.querySelector(`[data-q="${p.id}"]`);
+    if (!box) continue;
+    if (p.se) box.classList.toggle("hidden", resp[p.se[0]] !== p.se[1]);
+    box.querySelectorAll('[role="radio"]').forEach(b => {
+      const v = b.classList.contains("hero-pick") ? b.getAttribute("aria-label") : b.textContent;
+      b.setAttribute("aria-checked", String(resp[p.id] === v));
+    });
+  }
+  salvarRascunho();
+  progresso();
+}
+
+function visiveis() { return todas.filter(p => !p.se || resp[p.se[0]] === p.se[1]); }
+function progresso() {
+  const vs = visiveis(), feitas = vs.filter(p => resp[p.id]).length;
+  document.getElementById("prog-txt").textContent = `${feitas} de ${vs.length}`;
+  document.getElementById("prog-fill").style.width = (100 * feitas / vs.length) + "%";
+}
+
+function faltando() { return visiveis().filter(p => p.obrig && !resp[p.id]); }
+function avisar(txt, erro) { const m = document.getElementById("msg"); m.textContent = txt; m.classList.toggle("err", !!erro); }
+function conferir() {
+  const f = faltando();
+  if (!f.length) return true;
+  avisar("Falta responder: " + f.map(p => p.texto).join(" · "), true);
+  document.querySelector(`[data-q="${f[0].id}"]`).scrollIntoView({ behavior: "smooth", block: "center" });
+  return false;
+}
+
+function pacote() {
+  const d = { enviado_em: new Date().toISOString(), versao: META.versao, plataforma_jogo: META.plataforma_jogo, largura_tela: String(window.innerWidth) };
+  for (const p of visiveis()) d[p.id] = resp[p.id] || "";
+  return d;
+}
+
+function texto() {
+  const linhas = ["*A Guilda — feedback*"];
+  if (META.versao) linhas.push(`Versão ${META.versao}${META.plataforma_jogo ? " · " + META.plataforma_jogo : ""}`);
+  for (const s of SECOES) {
+    const qs = s.perguntas.filter(p => resp[p.id] && (!p.se || resp[p.se[0]] === p.se[1]));
+    if (!qs.length) continue;
+    linhas.push("", `*${s.titulo}*`);
+    for (const p of qs) linhas.push(`• ${p.texto}: ${resp[p.id]}`);
+  }
+  return linhas.join("\n");
+}
+
+async function enviar() {
+  if (!conferir()) return;
+  if (document.getElementById("site").value) return agradecer();   // robô preencheu o campo escondido
+  const b = document.getElementById("enviar");
+  b.disabled = true; avisar("Selando o envelope…");
+  try {
+    // no-cors: o Apps Script não devolve CORS; o pedido chega mesmo sem a página ler a resposta.
+    await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: new URLSearchParams({ payload: JSON.stringify(pacote()) }) });
+    agradecer("Sua resposta foi selada e enviada.");
+  } catch (e) {
+    b.disabled = false;
+    avisar("Não consegui enviar (sem internet?). Tente de novo, ou use o WhatsApp ou o Copiar.", true);
+  }
+}
+
+function whatsapp() {
+  if (!conferir()) return;
+  const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto())}`;
+  window.open(url, "_blank", "noopener");
+  agradecer("Suas respostas foram para o WhatsApp. É só tocar em enviar lá.");
+}
+
+async function copiar() {
+  if (!conferir()) return;
+  try { await navigator.clipboard.writeText(texto()); avisar("Respostas copiadas. Cole numa mensagem para o pessoal da guilda."); }
+  catch (e) { avisar("Não deu para copiar automaticamente neste navegador. Use o WhatsApp.", true); }
+}
+
+function agradecer(txt) {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+  document.getElementById("form-area").classList.add("hidden");
+  document.querySelector(".progress").classList.add("hidden");
+  if (txt) document.getElementById("thanks-txt").textContent = txt;
+  document.getElementById("thanks").classList.remove("hidden");
+  window.scrollTo({ top: 0 });
+}
+
+document.getElementById("again").addEventListener("click", () => {
+  resp = {}; montar();
+  document.getElementById("thanks").classList.add("hidden");
+  document.getElementById("form-area").classList.remove("hidden");
+  document.querySelector(".progress").classList.remove("hidden");
+});
+
+montar();
+</script>
+</body>
+</html>
