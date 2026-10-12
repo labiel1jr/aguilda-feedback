@@ -5,6 +5,9 @@
  */
 const ABA = "Respostas";
 const MAX_TEXTO = 2000;
+// Cada resposta também chega por e-mail. Vazio: vai para a conta Google dona da planilha (quem publicou o script).
+// Para mandar a outro endereço (ou a vários, separados por vírgula), escreva aqui. false: não manda e-mail.
+const EMAIL_AVISO = "";
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -19,9 +22,26 @@ function doPost(e) {
     aba.getRange(1, 1, 1, cab.length).setValues([cab]).setFontWeight("bold");
     aba.setFrozenRows(1);
     aba.appendRow(cab.map(function (k) { return limpar(dados[k]); }));
+    avisarPorEmail(dados, planilha);
     return ContentService.createTextOutput("ok");
   } finally {
     lock.releaseLock();
+  }
+}
+
+/** Manda a resposta por e-mail. Falha no e-mail (cota diária, por exemplo) não perde a linha da planilha. */
+function avisarPorEmail(dados, planilha) {
+  if (EMAIL_AVISO === false) return;
+  try {
+    var para = EMAIL_AVISO || Session.getEffectiveUser().getEmail();
+    var quem = dados.nome ? String(dados.nome).slice(0, 60) : "alguém";
+    var assunto = "A Guilda — feedback de " + quem + (dados.nps !== undefined && dados.nps !== "" ? " (nota " + dados.nps + ")" : "");
+    var linhas = Object.keys(dados).filter(function (k) { return dados[k] !== "" && dados[k] !== undefined; })
+      .map(function (k) { return k + ": " + String(dados[k]).slice(0, MAX_TEXTO); });
+    linhas.push("", "Planilha: " + planilha.getUrl());
+    MailApp.sendEmail(para, assunto, linhas.join("\n"));
+  } catch (err) {
+    console.error("e-mail não enviado: " + err);
   }
 }
 

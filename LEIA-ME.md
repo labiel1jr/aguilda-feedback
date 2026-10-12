@@ -17,7 +17,9 @@ As respostas vão para uma **planilha Google** (uma linha por pessoa). O WhatsAp
 4. Autorize com sua conta (o Google avisa que o app não é verificado: **Avançado → Acessar**). O script só mexe nesta planilha.
 5. Copie a **URL do app da Web** (termina em `/exec`). Abrir essa URL no navegador mostra "A Guilda — feedback: no ar."
 6. No `index.html`, cole a URL em `const ENDPOINT = "";`.
-7. Se quiser o botão do WhatsApp indo direto para você, ponha seu número em `const WHATSAPP = "";` (só dígitos, com 55 e DDD).
+7. O botão do WhatsApp vai para o número em `const WHATSAPP` (só dígitos, com 55 e DDD).
+8. **E-mail automático:** cada resposta enviada pela planilha também chega por e-mail na conta Google dona da planilha (o Google pede a permissão "enviar e-mail como você" ao autorizar). Para outro endereço, preencha `EMAIL_AVISO` no `Codigo.gs`; `false` desliga. Cota do Google: 100 e-mails por dia numa conta comum.
+9. **Botão "Mandar por e-mail"** (opcional, para quem prefere o próprio e-mail): preencha `const EMAIL = "";` no `index.html`. Fica visível na página pública.
 
 Se mudar o `Codigo.gs` depois: **Implantar → Gerenciar implantações → editar → Nova versão** (a URL continua a mesma).
 

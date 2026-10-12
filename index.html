@@ -179,7 +179,9 @@ footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--mut
 // URL do App Script publicado como app da Web (ver LEIA-ME.md). Vazio: só WhatsApp e copiar.
 const ENDPOINT = "";
 // Número do WhatsApp que recebe as respostas, só dígitos com DDI e DDD (ex.: 5511999998888). Vazio: a pessoa escolhe o contato.
-const WHATSAPP = "";
+const WHATSAPP = "5531993395418";
+// E-mail do botão "Mandar por e-mail" (abre o programa de e-mail da pessoa já preenchido). Vazio: o botão não aparece.
+const EMAIL = "";
 
 const HEROIS = [
   ["theo", "Theo", "Paladino"], ["lyssa", "Lyssa", "Ladina"], ["mira", "Mira", "Maga"], ["senna", "Senna", "Guerreira"],
@@ -325,11 +327,13 @@ function montar() {
   const btns = el("div", { class: "btns" });
   if (ENDPOINT) btns.append(el("button", { type: "submit", class: "btn", id: "enviar" }, el("img", { src: "assets/confirmar.png", alt: "" }), "Enviar respostas"));
   btns.append(el("button", { type: "button", class: ENDPOINT ? "btn alt" : "btn", id: "whats" }, el("img", { src: "assets/conversar.png", alt: "" }), "Mandar pelo WhatsApp"));
+  if (EMAIL) btns.append(el("button", { type: "button", class: "btn alt", id: "email" }, el("img", { src: "assets/continuar.png", alt: "" }), "Mandar por e-mail"));
   btns.append(el("button", { type: "button", class: "btn alt", id: "copiar" }, el("img", { src: "assets/ver_detalhes.png", alt: "" }), "Copiar respostas"));
   fim.append(btns, el("p", { class: "msg", id: "msg", role: "status" }));
   f.append(fim);
   f.addEventListener("submit", e => { e.preventDefault(); enviar(); });
   document.getElementById("whats").addEventListener("click", whatsapp);
+  if (EMAIL) document.getElementById("email").addEventListener("click", email);
   document.getElementById("copiar").addEventListener("click", copiar);
   atualizar();
 }
@@ -404,6 +408,14 @@ function whatsapp() {
   const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto())}`;
   window.open(url, "_blank", "noopener");
   agradecer("Suas respostas foram para o WhatsApp. É só tocar em enviar lá.");
+}
+
+function email() {
+  if (!conferir()) return;
+  const assunto = "A Guilda — feedback" + (resp.nome ? " de " + resp.nome : "");
+  const corpo = texto().replace(/\*/g, "");
+  location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+  agradecer("Suas respostas foram para o seu e-mail. É só tocar em enviar lá.");
 }
 
 async function copiar() {
