@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A Guilda — Feedback</title>
-<meta name="description" content="Conte à guilda o que você achou do jogo: cinco minutos, poucas perguntas.">
+<meta name="description" content="Conte à guilda o que você achou do jogo: uns sete minutos, poucas perguntas.">
 <meta property="og:title" content="A Guilda — conte o que achou">
 <meta property="og:description" content="Cinco minutos para ajudar a guilda a melhorar.">
 <meta property="og:image" content="assets/titulo.webp">
@@ -56,6 +56,9 @@ body::before { content: ""; position: fixed; inset: 0; background: rgba(28, 20, 
 }
 .cartaz h2 { margin: 0 0 4px; font: 800 24px/1.2 Cinzel, serif; color: #5b3a17; }
 .cartaz .sub { margin: 0 0 14px; color: var(--ink-soft); font-style: italic; }
+.novas { margin: 0 0 18px; padding-left: 22px; color: var(--ink); }
+.novas li { margin: 0 0 6px; }
+.novas b { color: #5b3a17; }
 .selo-sec { float: right; width: 44px; height: 44px; margin: -12px -6px 0 8px; opacity: .9; }
 
 .q { margin: 20px 0 0; border: 0; padding: 0; min-width: 0; }
@@ -158,7 +161,7 @@ footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--mut
 
   <main id="form-area">
     <section class="cartaz" style="margin-top:24px">
-      <p style="margin:0">Obrigado por jogar! Estas perguntas ajudam a decidir o que melhorar primeiro. Leva uns <b>5 minutos</b>.
+      <p style="margin:0">Obrigado por jogar! Estas perguntas ajudam a decidir o que melhorar primeiro. Leva uns <b>7 minutos</b>.
       Só as marcadas com <span class="req">✦</span> são obrigatórias; pule o que quiser.</p>
     </section>
     <form id="f" novalidate></form>
@@ -186,6 +189,7 @@ const EMAIL = "";
 const HEROIS = [
   ["theo", "Theo", "Paladino"], ["lyssa", "Lyssa", "Ladina"], ["mira", "Mira", "Maga"], ["senna", "Senna", "Guerreira"],
   ["bram", "Bram", "Bardo"], ["vera", "Vera", "Guerreira"], ["corin", "Corin", "Clérigo"], ["halvard", "Halvard", "Guerreiro"],
+  ["midas", "Midas", "Artífice"], ["ferrolho", "Ferrolho", "Companheiro"],
 ];
 
 // Seções e perguntas. tipo: escolha | escala | nps | heroi | texto | longo
@@ -215,6 +219,28 @@ const SECOES = [
     { id: "por_que_esquecido", tipo: "texto", texto: "Por quê?", ajuda: "Fraco, sem graça, não combinava com os outros…" },
     { id: "relacoes_mudaram", tipo: "escolha", texto: "As relações e os bastidores mudaram suas escolhas de quem mandar?", opcoes: ["Não", "Um pouco", "Muito"] },
     { id: "historia", tipo: "escala", texto: "A história te prendeu?", ends: ["Nem um pouco", "Muito"] },
+  ]},
+  { titulo: "O que mudou", sub: "Novidades das versões 0.9.3 a 0.9.5. Se você jogou uma versão anterior, pode pular esta parte.", selo: "selo_lendario",
+    lista: [
+      "<b>Midas, o artífice</b>, e o <b>Ferrolho</b>, o defensor de ferro que ele construiu: o Ferrolho vai junto ou sai sozinho numa vaga extra por dia, e volta sempre quebrado.",
+      "<b>A mesma missão conta outra história conforme quem foi</b>: Theo e Lyssa brigam pelas peles dos lobos, Vera protege Bram a noite toda…",
+      "<b>Arcos pessoais</b>: Vera, Bram, Lyssa, Corin, a Horda de Ulag (Senna) e <b>A Mão do Sindicato</b> (Midas, Capítulo 3).",
+      "<b>Bastidores</b> que não repetem em seguida e cenas novas do dia a dia da guilda.",
+      "<b>Tamanho do texto</b> nas Opções e na tela de título; o Grimório avisa (✦) quando dá para aprender magia nova.",
+    ],
+    perguntas: [
+      { id: "midas_ferrolho", tipo: "escala", texto: "Midas e o Ferrolho (mandar o Ferrolho sozinho, consertá-lo, as infusões da bancada)", extra: "Não cheguei a usar" },
+      { id: "reacoes", tipo: "escala", texto: "O resultado das missões mudando conforme quem você mandou", extra: "Não reparei" },
+      { id: "arco_favorito", tipo: "escolha", texto: "Qual arco pessoal você mais gostou?", opcoes: ["Vera (Os Túmulos da Colina)", "Bram (A Balada do Corvo Ladrão)", "Lyssa (A Casa das Agulhas)", "Corin (A Confissão de Edrel)", "Senna (A Horda de Ulag)", "Midas (A Mão do Sindicato)", "Não joguei nenhum"] },
+      { id: "arco_por_que", tipo: "texto", texto: "O que fez esse arco ser o melhor (ou o que faltou nos outros)?" },
+      { id: "bastidores_repetem", tipo: "escolha", texto: "As cenas de bastidores ainda repetem demais?", opcoes: ["Não", "Um pouco", "Muito", "Não reparei"] },
+      { id: "tamanho_texto", tipo: "escolha", texto: "Dá para ler o texto com conforto?", ajuda: "No celular, a opção Texto fica na tela de título e no menu ☰.", opcoes: ["Sim, do jeito que veio", "Sim, depois de aumentar", "Ainda está pequeno", "Não achei a opção"] },
+    ]},
+  { titulo: "Melhorias que você quer", sub: "Ajude a decidir o que vem a seguir.", selo: "selo_pessoal", perguntas: [
+      { id: "prioridade", tipo: "escolha", texto: "O que deveria vir primeiro?", opcoes: ["Mais missões e arcos", "Mais heróis", "Mais cenas e bastidores", "Explicar melhor as regras", "Equilibrar a dificuldade", "Mais arte e música"] },
+      { id: "tutorial", tipo: "escolha", texto: "Um tutorial guiado nas primeiras missões ajudaria?", opcoes: ["Sim", "Tanto faz", "Não"] },
+      { id: "melhoria", tipo: "longo", texto: "Tem uma ideia de melhoria? Pode ser grande ou pequena.", ajuda: "Uma tela mais clara, um tipo de missão, um herói que você queria ver, um botão que faltou…" },
+      { id: "heroi_desejado", tipo: "texto", texto: "Que tipo de herói você gostaria de ver na guilda?", ajuda: "Classe, raça, um defeito interessante…" },
   ]},
   { titulo: "Arte e som", sub: "1 = não gostei · 5 = gostei muito", selo: "selo_comum", perguntas: [
     { id: "arte", tipo: "escala", texto: "A arte (retratos, cenas, quadro de avisos, mapa)" },
@@ -318,6 +344,11 @@ function montar() {
   for (const s of SECOES) {
     const sec = el("section", { class: "cartaz" });
     sec.append(el("img", { class: "selo-sec", src: `assets/${s.selo}.png`, alt: "" }), el("h2", {}, s.titulo), el("p", { class: "sub" }, s.sub));
+    if (s.lista) {
+      const ul = el("ul", { class: "novas" });
+      for (const item of s.lista) { const li = el("li"); li.innerHTML = item; ul.append(li); }   // texto fixo da página, não do usuário
+      sec.append(ul);
+    }
     s.perguntas.forEach(p => sec.append(campo(p)));
     f.append(sec);
   }

@@ -8,7 +8,7 @@ from pathlib import Path
 
 from PIL import Image
 
-HEROIS = ["theo", "lyssa", "mira", "senna", "bram", "vera", "corin", "halvard"]
+HEROIS = ["theo", "lyssa", "mira", "senna", "bram", "vera", "corin", "halvard", "midas", "ferrolho"]
 
 # (origem no jogo, destino em assets/, largura máxima ou None para manter)
 GRANDES = [
