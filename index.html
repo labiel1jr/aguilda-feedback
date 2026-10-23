@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Guilda — Feedback</title>
+<title data-i18n="A Guilda — Feedback">A Guilda — Feedback</title>
 <meta name="description" content="Conte à guilda o que você achou do jogo: uns sete minutos, poucas perguntas.">
 <meta property="og:title" content="A Guilda — conte o que achou">
 <meta property="og:description" content="Cinco minutos para ajudar a guilda a melhorar.">
@@ -147,6 +147,9 @@ footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--mut
   .scale-ends.nps-ends { display: none; }
   .btn { width: 100%; justify-content: center; }
 }
+.langs { margin-top: 8px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.langs a { color: #f3e6c8; text-decoration: none; padding: 2px 10px; border-radius: 6px; background: rgba(0,0,0,.35); font-size: 15px; }
+.langs a[aria-current="true"] { background: #b8892e; color: #1a120c; font-weight: bold; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -154,14 +157,15 @@ footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--mut
 <div class="wrap">
   <header class="hero">
     <h1>A Guilda</h1>
-    <p>Conte à guilda o que você achou</p>
+    <p data-i18n="Conte à guilda o que você achou">Conte à guilda o que você achou</p>
+    <nav class="langs" id="langs"></nav>
   </header>
 
   <div class="progress" aria-hidden="true"><span id="prog-txt">0 de 0</span><div class="bar"><div class="fill" id="prog-fill"></div></div></div>
 
   <main id="form-area">
     <section class="cartaz" style="margin-top:24px">
-      <p style="margin:0">Obrigado por jogar! Estas perguntas ajudam a decidir o que melhorar primeiro. Leva uns <b>7 minutos</b>.
+      <p style="margin:0" data-i18n-html="Obrigado por jogar! Estas perguntas ajudam a decidir o que melhorar primeiro. Leva uns <b>7 minutos</b>. Só as marcadas com <span class=&quot;req&quot;>✦</span> são obrigatórias; pule o que quiser.">Obrigado por jogar! Estas perguntas ajudam a decidir o que melhorar primeiro. Leva uns <b>7 minutos</b>.
       Só as marcadas com <span class="req">✦</span> são obrigatórias; pule o que quiser.</p>
     </section>
     <form id="f" novalidate></form>
@@ -169,14 +173,15 @@ footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--mut
 
   <main id="thanks" class="obrigado hidden" aria-live="polite">
     <img class="selo" src="assets/selo_lendario.png" alt="">
-    <h2>A guilda agradece!</h2>
-    <p id="thanks-txt">Sua resposta foi selada e enviada.</p>
-    <div class="btns"><button class="btn alt" type="button" id="again"><img src="assets/voltar.png" alt="">Responder de novo</button></div>
+    <h2 data-i18n="A guilda agradece!">A guilda agradece!</h2>
+    <p id="thanks-txt" data-i18n="Sua resposta foi selada e enviada.">Sua resposta foi selada e enviada.</p>
+    <div class="btns"><button class="btn alt" type="button" id="again"><img src="assets/voltar.png" alt=""><span data-i18n="Responder de novo">Responder de novo</span></button></div>
   </main>
 
-  <footer>A Guilda — jogo em desenvolvimento · as respostas são usadas só para melhorar o jogo</footer>
+  <footer data-i18n="A Guilda — jogo em desenvolvimento · as respostas são usadas só para melhorar o jogo">A Guilda — jogo em desenvolvimento · as respostas são usadas só para melhorar o jogo</footer>
 </div>
 
+<script src="i18n.js"></script>
 <script>
 // ===== Configuração =====
 // URL do App Script publicado como app da Web (ver LEIA-ME.md). Vazio: só WhatsApp e copiar.
@@ -296,9 +301,9 @@ function el(tag, attrs = {}, ...kids) {
 }
 
 function cabecalho(p, asLegend) {
-  const t = el(asLegend ? "legend" : "label", asLegend ? {} : { class: "lbl", for: "q_" + p.id }, p.texto);
-  if (p.obrig) t.append(" ", el("span", { class: "req", title: "obrigatória" }, "✦"));
-  if (p.ajuda) t.append(el("span", { class: "help" }, p.ajuda));
+  const t = el(asLegend ? "legend" : "label", asLegend ? {} : { class: "lbl", for: "q_" + p.id }, T(p.texto));
+  if (p.obrig) t.append(" ", el("span", { class: "req", title: T("obrigatória") }, "✦"));
+  if (p.ajuda) t.append(el("span", { class: "help" }, T(p.ajuda)));
   return t;
 }
 
@@ -306,7 +311,7 @@ function cabecalho(p, asLegend) {
 function grupo(p, valores, rotulos, classe) {
   const box = el("div", { class: classe, role: "radiogroup" });
   valores.forEach((v, i) => {
-    const b = el("button", { type: "button", class: "opt", role: "radio", "aria-checked": String(resp[p.id] === v) }, rotulos[i]);
+    const b = el("button", { type: "button", class: "opt", role: "radio", "data-v": v, "aria-checked": String(resp[p.id] === v) }, T(rotulos[i]));
     b.addEventListener("click", () => { resp[p.id] = resp[p.id] === v ? undefined : v; atualizar(); });
     box.append(b);
   });
@@ -330,20 +335,20 @@ function campo(p) {
   if (p.tipo === "escolha") w.append(grupo(p, p.opcoes, p.opcoes, "opts"));
   if (p.tipo === "escala") {
     w.append(grupo(p, ["1", "2", "3", "4", "5"], ["1", "2", "3", "4", "5"], "scale"));
-    const ends = p.ends || ["Pouco", "Muito"];
+    const ends = (p.ends || ["Pouco", "Muito"]).map(T);
     w.append(el("div", { class: "scale-ends" }, el("span", {}, ends[0]), el("span", {}, ends[1])));
     if (p.extra) w.append(el("div", { class: "opts", style: "margin-top:8px" }, ...grupo(p, [p.extra], [p.extra], "opts").childNodes));
   }
   if (p.tipo === "nps") {
     const vs = Array.from({ length: 11 }, (_, i) => String(i));
     w.append(grupo(p, vs, vs, "scale nps"));
-    w.append(el("div", { class: "scale-ends nps-ends" }, el("span", {}, "De jeito nenhum"), el("span", {}, "Com certeza")));
+    w.append(el("div", { class: "scale-ends nps-ends" }, el("span", {}, T("De jeito nenhum")), el("span", {}, T("Com certeza"))));
   }
   if (p.tipo === "heroi") {
     const box = el("div", { class: "heroes", role: "radiogroup" });
     for (const [id, nome, classe] of HEROIS) {
       const b = el("button", { type: "button", class: "hero-pick", role: "radio", "aria-checked": String(resp[p.id] === nome), "aria-label": nome },
-        el("img", { src: `assets/herois/${id}.webp`, alt: "", loading: "lazy", width: "192", height: "192" }), el("span", {}, nome), el("small", {}, classe));
+        el("img", { src: `assets/herois/${id}.webp`, alt: "", loading: "lazy", width: "192", height: "192" }), el("span", {}, nome), el("small", {}, T(classe)));
       b.addEventListener("click", () => { resp[p.id] = resp[p.id] === nome ? undefined : nome; atualizar(); });
       box.append(b);
     }
@@ -358,23 +363,23 @@ function montar() {
   f.replaceChildren();
   for (const s of SECOES) {
     const sec = el("section", { class: "cartaz" });
-    sec.append(el("img", { class: "selo-sec", src: `assets/${s.selo}.png`, alt: "" }), el("h2", {}, s.titulo), el("p", { class: "sub" }, s.sub));
+    sec.append(el("img", { class: "selo-sec", src: `assets/${s.selo}.png`, alt: "" }), el("h2", {}, T(s.titulo)), el("p", { class: "sub" }, T(s.sub)));
     if (s.lista) {
       const ul = el("ul", { class: "novas" });
-      for (const item of s.lista) { const li = el("li"); li.innerHTML = item; ul.append(li); }   // texto fixo da página, não do usuário
+      for (const item of s.lista) { const li = el("li"); li.innerHTML = T(item); ul.append(li); }   // texto fixo da página, não do usuário
       sec.append(ul);
     }
     s.perguntas.forEach(p => sec.append(campo(p)));
     f.append(sec);
   }
   const fim = el("section", { class: "cartaz selar" });
-  fim.append(el("h2", {}, "Selar e enviar"));
+  fim.append(el("h2", {}, T("Selar e enviar")));
   fim.append(el("input", { class: "honey", type: "text", id: "site", tabindex: "-1", autocomplete: "off", "aria-hidden": "true" }));
   const btns = el("div", { class: "btns" });
-  if (ENDPOINT) btns.append(el("button", { type: "submit", class: "btn", id: "enviar" }, el("img", { src: "assets/confirmar.png", alt: "" }), "Enviar respostas"));
-  btns.append(el("button", { type: "button", class: ENDPOINT ? "btn alt" : "btn", id: "whats" }, el("img", { src: "assets/conversar.png", alt: "" }), "Mandar pelo WhatsApp"));
-  if (EMAIL) btns.append(el("button", { type: "button", class: "btn alt", id: "email" }, el("img", { src: "assets/continuar.png", alt: "" }), "Mandar por e-mail"));
-  btns.append(el("button", { type: "button", class: "btn alt", id: "copiar" }, el("img", { src: "assets/ver_detalhes.png", alt: "" }), "Copiar respostas"));
+  if (ENDPOINT) btns.append(el("button", { type: "submit", class: "btn", id: "enviar" }, el("img", { src: "assets/confirmar.png", alt: "" }), T("Enviar respostas")));
+  btns.append(el("button", { type: "button", class: ENDPOINT ? "btn alt" : "btn", id: "whats" }, el("img", { src: "assets/conversar.png", alt: "" }), T("Mandar pelo WhatsApp")));
+  if (EMAIL) btns.append(el("button", { type: "button", class: "btn alt", id: "email" }, el("img", { src: "assets/continuar.png", alt: "" }), T("Mandar por e-mail")));
+  btns.append(el("button", { type: "button", class: "btn alt", id: "copiar" }, el("img", { src: "assets/ver_detalhes.png", alt: "" }), T("Copiar respostas")));
   fim.append(btns, el("p", { class: "msg", id: "msg", role: "status" }));
   f.append(fim);
   f.addEventListener("submit", e => { e.preventDefault(); enviar(); });
@@ -391,7 +396,7 @@ function atualizar() {
     if (!box) continue;
     if (p.se) box.classList.toggle("hidden", resp[p.se[0]] !== p.se[1]);
     box.querySelectorAll('[role="radio"]').forEach(b => {
-      const v = b.classList.contains("hero-pick") ? b.getAttribute("aria-label") : b.textContent;
+      const v = b.classList.contains("hero-pick") ? b.getAttribute("aria-label") : b.dataset.v;
       b.setAttribute("aria-checked", String(resp[p.id] === v));
     });
   }
@@ -402,7 +407,7 @@ function atualizar() {
 function visiveis() { return todas.filter(p => !p.se || resp[p.se[0]] === p.se[1]); }
 function progresso() {
   const vs = visiveis(), feitas = vs.filter(p => resp[p.id]).length;
-  document.getElementById("prog-txt").textContent = `${feitas} de ${vs.length}`;
+  document.getElementById("prog-txt").textContent = `${feitas} ${T("de")} ${vs.length}`;
   document.getElementById("prog-fill").style.width = (100 * feitas / vs.length) + "%";
 }
 
@@ -411,13 +416,13 @@ function avisar(txt, erro) { const m = document.getElementById("msg"); m.textCon
 function conferir() {
   const f = faltando();
   if (!f.length) return true;
-  avisar("Falta responder: " + f.map(p => p.texto).join(" · "), true);
+  avisar(T("Falta responder: ") + f.map(p => T(p.texto)).join(" · "), true);
   document.querySelector(`[data-q="${f[0].id}"]`).scrollIntoView({ behavior: "smooth", block: "center" });
   return false;
 }
 
 function pacote() {
-  const d = { enviado_em: new Date().toISOString(), versao: META.versao, plataforma_jogo: META.plataforma_jogo, largura_tela: String(window.innerWidth) };
+  const d = { enviado_em: new Date().toISOString(), versao: META.versao, plataforma_jogo: META.plataforma_jogo, largura_tela: String(window.innerWidth), idioma_formulario: LANG };
   for (const p of visiveis()) d[p.id] = resp[p.id] || "";
   return d;
 }
@@ -438,14 +443,14 @@ async function enviar() {
   if (!conferir()) return;
   if (document.getElementById("site").value) return agradecer();   // robô preencheu o campo escondido
   const b = document.getElementById("enviar");
-  b.disabled = true; avisar("Selando o envelope…");
+  b.disabled = true; avisar(T("Selando o envelope…"));
   try {
     // no-cors: o Apps Script não devolve CORS; o pedido chega mesmo sem a página ler a resposta.
     await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: new URLSearchParams({ payload: JSON.stringify(pacote()) }) });
-    agradecer("Sua resposta foi selada e enviada.");
+    agradecer(T("Sua resposta foi selada e enviada."));
   } catch (e) {
     b.disabled = false;
-    avisar("Não consegui enviar (sem internet?). Tente de novo, ou use o WhatsApp ou o Copiar.", true);
+    avisar(T("Não consegui enviar (sem internet?). Tente de novo, ou use o WhatsApp ou o Copiar."), true);
   }
 }
 
@@ -453,7 +458,7 @@ function whatsapp() {
   if (!conferir()) return;
   const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto())}`;
   window.open(url, "_blank", "noopener");
-  agradecer("Suas respostas foram para o WhatsApp. É só tocar em enviar lá.");
+  agradecer(T("Suas respostas foram para o WhatsApp. É só tocar em enviar lá."));
 }
 
 function email() {
@@ -461,13 +466,13 @@ function email() {
   const assunto = "A Guilda — feedback" + (resp.nome ? " de " + resp.nome : "");
   const corpo = texto().replace(/\*/g, "");
   location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
-  agradecer("Suas respostas foram para o seu e-mail. É só tocar em enviar lá.");
+  agradecer(T("Suas respostas foram para o seu e-mail. É só tocar em enviar lá."));
 }
 
 async function copiar() {
   if (!conferir()) return;
-  try { await navigator.clipboard.writeText(texto()); avisar("Respostas copiadas. Cole numa mensagem para o pessoal da guilda."); }
-  catch (e) { avisar("Não deu para copiar automaticamente neste navegador. Use o WhatsApp.", true); }
+  try { await navigator.clipboard.writeText(texto()); avisar(T("Respostas copiadas. Cole numa mensagem para o pessoal da guilda.")); }
+  catch (e) { avisar(T("Não deu para copiar automaticamente neste navegador. Use o WhatsApp."), true); }
 }
 
 function agradecer(txt) {
@@ -486,6 +491,18 @@ document.getElementById("again").addEventListener("click", () => {
   document.querySelector(".progress").classList.remove("hidden");
 });
 
+function traduzirPagina() {
+  document.documentElement.lang = { en: "en", es: "es", pt: "pt-BR" }[LANG];
+  document.querySelectorAll("[data-i18n]").forEach(n => { n.textContent = T(n.getAttribute("data-i18n")); });
+  document.querySelectorAll("[data-i18n-html]").forEach(n => { n.innerHTML = T(n.getAttribute("data-i18n-html")); });   // texto fixo da página
+  const nav = document.getElementById("langs");
+  for (const [code, nome] of [["pt", "Português"], ["en", "English"], ["es", "Español"]]) {
+    const q = new URLSearchParams(location.search); q.set("lang", code);
+    nav.append(el("a", { href: "?" + q.toString(), "aria-current": String(code === LANG) }, nome));
+  }
+}
+
+traduzirPagina();
 montar();
 </script>
 </body>
