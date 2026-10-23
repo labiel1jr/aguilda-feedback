@@ -34,7 +34,7 @@ body::before { content: ""; position: fixed; inset: 0; background: rgba(28, 20, 
   position: relative; margin: 0 -16px; height: min(52vw, 360px); min-height: 200px;
   background: url("assets/titulo.webp") center 30% / cover; border-bottom: 3px solid #1a120c;
 }
-.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 45%, rgba(28,20,13,.95)); }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(transparent 45%, rgba(28,20,13,.95)); }
 .hero h1, .hero p { position: absolute; left: 0; right: 0; text-align: center; z-index: 1; margin: 0; padding: 0 16px; }
 .hero h1 {
   bottom: 52px; font: 800 clamp(40px, 9vw, 68px)/1 Cinzel, serif; color: var(--gold);
@@ -147,7 +147,7 @@ footer { margin-top: 40px; text-align: center; font-size: 15px; color: var(--mut
   .scale-ends.nps-ends { display: none; }
   .btn { width: 100%; justify-content: center; }
 }
-.langs { margin-top: 8px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.langs { position: relative; z-index: 2; margin-top: 8px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .langs a { color: #f3e6c8; text-decoration: none; padding: 2px 10px; border-radius: 6px; background: rgba(0,0,0,.35); font-size: 15px; }
 .langs a[aria-current="true"] { background: #b8892e; color: #1a120c; font-weight: bold; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
