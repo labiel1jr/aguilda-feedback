@@ -29,7 +29,7 @@ const COLUNAS = [
   ["favorito", "Favorito", 90], ["esquecido", "Quase não usou", 110], ["por_que_esquecido", "Por quê", 220], ["relacoes_mudaram", "Relações mudaram escolhas", 110],
   ["historia", "História", 70], ["arte", "Arte", 60], ["musica", "Música", 90], ["arte_comentario", "Arte estranha", 220],
   ["bug", "Achou erro", 80], ["bug_desc", "Descrição do erro", 320],
-  ["nps", "Nota 0–10", 70], ["mudaria", "Mudaria", 300], ["gostou", "Mais gostou", 300], ["proxima", "Jogaria a próxima", 100],
+  ["nps", "Nota 0–10", 70], ["mudaria", "Mudaria", 300], ["gostou", "Mais gostou", 300], ["momento_compartilhar", "Momento para contar a um amigo", 300], ["cartao_guilda", "Cartão da guilda", 130], ["proxima", "Jogaria a próxima", 100],
 ];
 // Respostas que são número (vão para a planilha como número, para as médias funcionarem).
 const NUMERICAS = ["clareza_chance", "clareza_mapa", "clareza_relacoes", "clareza_extras", "historia", "arte", "musica", "nps", "largura_tela"];

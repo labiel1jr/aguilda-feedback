@@ -225,8 +225,12 @@ const SECOES = [
     { id: "relacoes_mudaram", tipo: "escolha", texto: "As relações e os bastidores mudaram suas escolhas de quem mandar?", opcoes: ["Não", "Um pouco", "Muito"] },
     { id: "historia", tipo: "escala", texto: "A história te prendeu?", ends: ["Nem um pouco", "Muito"] },
   ]},
-  { titulo: "O que mudou", sub: "Novidades das versões 0.9.3 a 0.9.23. Se você jogou uma versão anterior, pode pular esta parte.", selo: "selo_lendario",
+  { titulo: "O que mudou", sub: "Novidades das versões 0.9.3 até hoje. Se você jogou uma versão anterior, pode pular esta parte.", selo: "selo_lendario",
     lista: [
+      "<b>Cartão da minha guilda</b>: no fim de cada capítulo e no epílogo, uma imagem com quem ficou, quem saiu, o laço mais forte e o maior atrito, pronta para salvar e mostrar.",
+      "<b>Tela de final do Ato 1</b>: o convite para acompanhar o jogo, cenas do que vem por aí e os créditos com música (também no título e nas Opções).",
+      "<b>Arco do Halvard, A Lua de Vau-Salgado</b> (Capítulo 4): a noite em que a guilda vê a fera, e a manhã em que decide como ele vai viver com ela.",
+      "<b>A decisão da Senna em visual novel</b>, as <b>cartas dos heróis</b> e as <b>abas com retrato</b> no Livro da Guilda, e o <b>Mapa Mágico</b> redesenhado (charcos a nanquim, ícones dos nós, bolsa e itens da rota).",
       "<b>Midas, o artífice</b>, e o <b>Ferrolho</b>, o defensor de ferro que ele construiu: o Ferrolho vai junto ou sai sozinho numa vaga extra por dia, e volta sempre quebrado.",
       "<b>A mesma missão conta outra história conforme quem foi</b>: Theo e Lyssa brigam pelas peles dos lobos, Vera protege Bram a noite toda…",
       "<b>Arcos pessoais</b>: Vera, Bram, Lyssa, Corin, a Horda de Ulag (Senna) e <b>A Mão do Sindicato</b> (Midas, Capítulo 3).",
@@ -242,7 +246,7 @@ const SECOES = [
     perguntas: [
       { id: "midas_ferrolho", tipo: "escala", texto: "Midas e o Ferrolho (mandar o Ferrolho sozinho, consertá-lo, as infusões da bancada)", extra: "Não cheguei a usar" },
       { id: "reacoes", tipo: "escala", texto: "O resultado das missões mudando conforme quem você mandou", extra: "Não reparei" },
-      { id: "arco_favorito", tipo: "escolha", texto: "Qual arco pessoal você mais gostou?", opcoes: ["Vera (Os Túmulos da Colina)", "Bram (A Balada do Corvo Ladrão)", "Lyssa (A Casa das Agulhas)", "Corin (A Confissão de Edrel)", "Senna (A Horda de Ulag)", "Midas (A Mão do Sindicato)", "Theo (A Palavra Dada)", "Não joguei nenhum"] },
+      { id: "arco_favorito", tipo: "escolha", texto: "Qual arco pessoal você mais gostou?", opcoes: ["Vera (Os Túmulos da Colina)", "Bram (A Balada do Corvo Ladrão)", "Lyssa (A Casa das Agulhas)", "Corin (A Confissão de Edrel)", "Senna (A Horda de Ulag)", "Midas (A Mão do Sindicato)", "Theo (A Palavra Dada)", "Halvard (A Lua de Vau-Salgado)", "Não joguei nenhum"] },
       { id: "arco_por_que", tipo: "texto", texto: "O que fez esse arco ser o melhor (ou o que faltou nos outros)?" },
       { id: "bastidores_repetem", tipo: "escolha", texto: "As cenas de bastidores ainda repetem demais?", opcoes: ["Não", "Um pouco", "Muito", "Não reparei"] },
       { id: "cenarios", tipo: "escala", texto: "Os cenários novos (capítulos, taverna, mercado, epílogo) deixaram o jogo mais bonito?", extra: "Não reparei" },
@@ -250,6 +254,7 @@ const SECOES = [
       { id: "confronto_obs", tipo: "texto", texto: "O que faltou ou sobrou no confronto (duração, dificuldade, magias, controles)?" },
       { id: "livro_ilustrado", tipo: "escala", texto: "O Livro da Guilda com os heróis de corpo inteiro ficou mais bonito e fácil de ler?", extra: "Não abri o Livro" },
       { id: "salao", tipo: "escala", texto: "O salão da guilda mudando com as melhorias construídas", extra: "Não reparei" },
+      { id: "tela_final", tipo: "escala", texto: "A tela de final do Ato 1 (o convite, as cenas do que vem e os créditos)", extra: "Não cheguei ao fim do Ato 1" },
       { id: "lowen", tipo: "escala", texto: "Lowen, o elfo mago do Capítulo 2 (e os segredos dele nos bastidores)", extra: "Não cheguei ao Capítulo 2" },
       { id: "idioma_jogado", tipo: "escolha", texto: "Em que idioma você jogou?", opcoes: ["Português", "English", "Español"] },
       { id: "idioma_obs", tipo: "texto", texto: "Viu algum texto sem traduzir ou estranho? Onde?", ajuda: "Se jogou em inglês ou espanhol." },
@@ -271,10 +276,12 @@ const SECOES = [
     { id: "bug", tipo: "escolha", texto: "Encontrou algum erro?", opcoes: ["Não", "Sim"] },
     { id: "bug_desc", tipo: "longo", texto: "O que aconteceu, em qual tela e o que você tinha feito antes?", se: ["bug", "Sim"] },
   ]},
-  { titulo: "O selo final", sub: "As duas perguntas que mais importam.", selo: "selo_lendario", perguntas: [
+  { titulo: "O selo final", sub: "As perguntas que mais importam.", selo: "selo_lendario", perguntas: [
     { id: "nps", tipo: "nps", texto: "De 0 a 10, quanto você recomendaria A Guilda a um amigo?", obrig: true },
     { id: "mudaria", tipo: "longo", texto: "Se você pudesse mudar uma coisa no jogo, o que seria?" },
     { id: "gostou", tipo: "longo", texto: "E o que você mais gostou?" },
+    { id: "momento_compartilhar", tipo: "longo", texto: "Que momento do jogo você contaria para um amigo?", ajuda: "Uma escolha, uma reviravolta, alguém que saiu da guilda, um desastre engraçado…" },
+    { id: "cartao_guilda", tipo: "escolha", texto: "O Cartão da minha guilda (fim de capítulo e epílogo)", opcoes: ["Salvei a imagem", "Compartilhei com alguém", "Vi, mas não salvei", "Não vi"] },
     { id: "proxima", tipo: "escolha", texto: "Jogaria a próxima versão?", opcoes: ["Sim", "Talvez", "Não"] },
   ]},
 ];
