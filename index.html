@@ -288,7 +288,8 @@ const SECOES = [
 
 // ===== Estado =====
 const params = new URLSearchParams(location.search);
-const META = { versao: params.get("v") || "", plataforma_jogo: params.get("p") || "" };
+// m = marco mais avançado que o jogo registrou no aparelho; t = minutos de jogo nesse marco (o jogo manda só quando o jogador abre esta página)
+const META = { versao: params.get("v") || "", plataforma_jogo: params.get("p") || "", marco_alcancado: params.get("m") || "", minutos_no_marco: params.get("t") || "" };
 const DRAFT_KEY = "aguilda-feedback-rascunho";
 let resp = {};
 try { resp = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}") || {}; } catch (e) { resp = {}; }
@@ -429,7 +430,7 @@ function conferir() {
 }
 
 function pacote() {
-  const d = { enviado_em: new Date().toISOString(), versao: META.versao, plataforma_jogo: META.plataforma_jogo, largura_tela: String(window.innerWidth), idioma_formulario: LANG };
+  const d = { enviado_em: new Date().toISOString(), versao: META.versao, plataforma_jogo: META.plataforma_jogo, marco_alcancado: META.marco_alcancado, minutos_no_marco: META.minutos_no_marco, largura_tela: String(window.innerWidth), idioma_formulario: LANG };
   for (const p of visiveis()) d[p.id] = resp[p.id] || "";
   return d;
 }
@@ -437,6 +438,7 @@ function pacote() {
 function texto() {
   const linhas = ["*A Guilda — feedback*"];
   if (META.versao) linhas.push(`Versão ${META.versao}${META.plataforma_jogo ? " · " + META.plataforma_jogo : ""}`);
+  if (META.marco_alcancado) linhas.push(`Chegou até: ${META.marco_alcancado}${META.minutos_no_marco ? " (" + META.minutos_no_marco + " min)" : ""}`);
   for (const s of SECOES) {
     const qs = s.perguntas.filter(p => resp[p.id] && (!p.se || resp[p.se[0]] === p.se[1]));
     if (!qs.length) continue;
